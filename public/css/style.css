@@ -1,0 +1,196 @@
+/* Updated CSS for improved visual appeal */
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #f0f8ff; 
+}
+
+.gridOne {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 15px; /* Increased gap between the cards */
+    justify-items: center;
+    padding: 20px;
+    max-height: 100vh; /* Set maximum height to viewport height */
+     
+}
+
+
+
+.card {
+    background-color: #87cefa; 
+    border: 2px solid #000;
+    border-radius: 10px; 
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    position: relative;
+    transition: transform 0.3s; /* Add flip animation */
+}
+
+.card:hover {
+    transform: scale(1.1); /* Scale up on hover */
+}
+
+.card img {
+    display: none;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.card.flipped img {
+    display: block;
+}
+
+h1, h2 {
+    text-align: center;
+    background-color: #0f2a7b; 
+    border: 1px solid #0f2a7b;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px rgba(41, 40, 40, 0.2);
+    padding: 10px;
+    margin: 10px 0;
+    color: white;
+}
+
+p {
+    font-size: 14px;
+    text-align: left;
+    margin: 0 auto;
+    color: #0056b3; /* Darker blue text */
+    background-color: #add8e6; /* Light blue background */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+}
+
+#timer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+    margin-bottom: 20px;
+}
+
+#timer, #round {
+    font-size: 18px;
+    background-color: hwb(51 55% 3%);
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+
+
+.button-container {
+    display: flex;
+    justify-content: center; /* Center the buttons */
+    gap: 10px; /* Add space between the buttons */
+}
+
+
+
+/* Common styles */
+.nav-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #0056b3;
+    text-decoration: none;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;;
+}
+
+.nav-button:hover {
+    background-color: #003a75;
+}
+
+.skip-to-main {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #0056b3; /* High contrast background color */
+    color: white; /* High contrast text color */
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 16px;
+    text-decoration: none;
+    z-index: 1000; /* Ensure it's above all other elements */
+    transform: translateY(-100%); /* Hide off-screen */
+    transition: transform 0.3s ease-in-out;
+}
+
+.skip-to-main:focus {
+    transform: translateY(0); /* Bring back on-screen when focused */
+    outline: 2px solid #ffffff; /* Add a visible focus outline */
+}
+
+
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .gridOne {
+        grid-template-columns: repeat(2, 1fr); /* Adjust the number of columns for mobile */
+        gap: 10px; /* Adjust the gap between cards for mobile */
+    }
+
+    .card {
+        width: 80px; /* Reduce card width for mobile */
+        height: 80px; /* Reduce card height for mobile */
+    }
+
+    .button-container {
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-button {
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
+    }
+
+    p {
+        margin-bottom: 10px;
+    }
+}
+
+
+/* Tablet and laptop styles */
+@media (min-width: 769px) and (max-width: 1700px) {
+    
+    .gridOne {
+        grid-template-columns: repeat(6, 1fr); /* Two rows with six cards each */
+        gap: 20px; /* Adjust spacing between cards */
+        justify-items: center;
+        padding: 20px;
+    }
+
+    .card {
+        width: 120px; /* Larger card width for non-mobile screens */
+        height: 120px; /* Larger card height for non-mobile screens */
+    }
+
+    .button-container {
+        width: 100%;
+        text-align: center;
+    }
+
+    .nav-button {
+        width: 100%;
+        display: block;
+        box-sizing: border-box;
+    }
+
+    p {
+        margin-bottom: 20px;
+    }
+}
