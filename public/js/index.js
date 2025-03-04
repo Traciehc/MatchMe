@@ -1,3 +1,5 @@
+// index.js
+
 "use strict";
 
 let firstCard = null;    // First card flipped
@@ -16,7 +18,7 @@ function updateRoundButton() {
 // Function to fetch images from the server
 async function getImages() {
     try {
-        const response = await fetch("http://localhost:3000/api/getImages");
+        const response = await fetch("/api/getImages");
         const data = await response.json();
         console.log("Fetched images (Front End):", data.data);
         return data.data; // Return the array of image URLs (6 URLs)
@@ -28,9 +30,8 @@ async function getImages() {
 
 // Function to trigger download event for a photo
 async function triggerDownload(photoId) {
-    const downloadUrl = `https://api.unsplash.com/photos/${photoId}/download?client_id=${process.env.CLIENT_ID}`;
     try {
-        const response = await fetch(downloadUrl);
+        const response = await fetch(`/api/triggerDownload/${photoId}`);
         const data = await response.json();
         console.log("Download triggered:", data);
     } catch (error) {
@@ -39,9 +40,9 @@ async function triggerDownload(photoId) {
 }
 
 // Function to handle the usage of a photo
-async function usePhoto(photoUrl) {
+function usePhoto(photoUrl) {
     const photoId = new URL(photoUrl).pathname.split('/').pop(); // Extract the photo ID
-    await triggerDownload(photoId); // Trigger download for Unsplash compliance
+    triggerDownload(photoId); // Trigger Unsplash download without awaiting
     console.log(`Photo used: ${photoUrl}`);
 }
 
@@ -57,6 +58,9 @@ function duplicateAndShuffleImages(images) {
 
 // Function to initialize the game
 async function initializeGame() {
+    resetGameState(); // Reset variables
+    flipAllCardsDown(); // Flip all cards face down
+
     const images = await getImages(); // Fetch 6 images from the server
     if (images) {
         const shuffledImages = duplicateAndShuffleImages(images); // Duplicate and shuffle for 12 cards
@@ -85,24 +89,48 @@ async function initializeGame() {
     }
 }
 
-function setupCardClickHandlers() {
-    document.querySelectorAll('.card').forEach(card => {
-        card.addEventListener('click', async () => {
-            if (boardLocked) return; // Do nothing if the board is locked
-            if (card === firstCard) return; // Ignore if the same card is clicked
-
-            card.classList.add('flipped');
-            const imgSrc = card.getAttribute('data-image');
-
-            if (firstCard === null) {
-                firstCard = card; // Store the first card
-            } else {
-                secondCard = card; // Store the second card
-                boardLocked = true; // Lock the board while checking for a match
-                await checkForMatch(firstCard, secondCard);
-            }
-        });
+// Function to flip all cards face down
+function flipAllCardsDown() {
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card) => {
+        card.classList.remove('flipped', 'matched');
     });
+}
+
+// Function to reset game state variables
+function resetGameState() {
+    firstCard = null;
+    secondCard = null;
+    boardLocked = false;
+}
+
+// Function to set up click handlers for cards
+function setupCardClickHandlers() {
+    const cards = document.querySelectorAll('.card');
+
+    cards.forEach((card) => {
+        // Remove existing event listener to prevent duplicates
+        card.removeEventListener('click', handleCardClick);
+        // Add the event listener
+        card.addEventListener('click', handleCardClick);
+    });
+}
+
+// Event handler for card clicks
+async function handleCardClick() {
+    if (boardLocked) return; // Do nothing if the board is locked
+    if (this === firstCard) return; // Ignore if the same card is clicked
+
+    this.classList.add('flipped');
+    const imgSrc = this.getAttribute('data-image');
+
+    if (firstCard === null) {
+        firstCard = this; // Store the first card
+    } else {
+        secondCard = this; // Store the second card
+        boardLocked = true; // Lock the board while checking for a match
+        await checkForMatch(firstCard, secondCard);
+    }
 }
 
 // Function to check for matching cards
@@ -113,7 +141,7 @@ async function checkForMatch(firstCard, secondCard) {
     if (firstImage === secondImage) {
         firstCard.classList.add('matched');
         secondCard.classList.add('matched');
-        await usePhoto(firstImage); // Trigger Unsplash download
+        usePhoto(firstImage); // Trigger Unsplash download
         resetBoard();
     } else {
         setTimeout(() => {
@@ -141,7 +169,12 @@ function nextRound() {
     if (currentRound < 3) { // Check if the current round is less than 3
         currentRound++; // Increment the round
         updateRoundButton(); // Update the round display
-        initializeGame(); // Reinitialize the game with new images
+
+        // Flip all cards face down at the start of the new round
+        flipAllCardsDown();
+
+        // Initialize the game with new images
+        initializeGame();
     } else {
         alert('You have completed all 3 rounds! You are AWESOME!'); // Notify the player
     }
@@ -161,10 +194,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (timeRemaining <= 0) {
             clearInterval(countdown);
-            alert('Time\'s up! Game over.');
+            alert('Time\'s up! Click Retry or Next Round.');
         }
     }, 1000);
 
     document.querySelector('.retry-button').addEventListener('click', retry);
     document.querySelector('.next-round-button').addEventListener('click', nextRound);
 });
+
