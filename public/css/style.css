@@ -52,8 +52,6 @@ h1, h2 {
     border: 1px solid #0f2a7b;
     border-radius: 5px;
     box-shadow: 2px 2px 5px rgba(41, 40, 40, 0.2);
-    padding: 10px;
-    margin: 10px 0;
     color: white;
 }
 
@@ -98,35 +96,38 @@ p {
 .nav-button {
     padding: 10px 20px;
     font-size: 16px;
-    color: #fff;
-    background-color: #0056b3;
+    color: #003a75;
+    background-color: hwb(51 55% 3%);
     text-decoration: none;
     border: none;
     border-radius: 5px;
     box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
     cursor: pointer;
     transition: background-color 0.3s;
-    margin-top: 10px;;
+    margin-top: 10px;
 }
 
 .nav-button:hover {
     background-color: #003a75;
+    color: white;
 }
 
 .skip-to-main {
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: #0056b3; /* High contrast background color */
-    color: white; /* High contrast text color */
+    position: sticky;
+    top: 10px; /* Sticky to the top */
+    left: 10px;
+    background-color: #0056b3; /* High contrast background */
+    color: white; /* High contrast text */
     padding: 10px 15px;
     border-radius: 5px;
     font-size: 16px;
     text-decoration: none;
-    z-index: 1000; /* Ensure it's above all other elements */
+    z-index: 1000;
     transform: translateY(-100%); /* Hide off-screen */
     transition: transform 0.3s ease-in-out;
 }
+
+    
 
 .skip-to-main:focus {
     transform: translateY(0); /* Bring back on-screen when focused */
@@ -191,6 +192,12 @@ p {
     }
 
     p {
-        margin-bottom: 20px;
+        margin-top: 30px;
+        margin-bottom: 30px;
     }
+    .skip-to-main {
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+
 }
