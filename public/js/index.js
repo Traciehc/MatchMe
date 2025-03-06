@@ -1,18 +1,44 @@
-// index.js
-
 "use strict";
 
-let firstCard = null;    // First card flipped
-let secondCard = null;   // Second card flipped
+let firstCard = null;
+let secondCard = null;
 let boardLocked = false;
-
-// Variable to store the current round
-let currentRound = 1; // Start at Round 1
+let currentRound = 1;
+let timerInterval = null;
+let timeRemaining = 35; // Set initial timer duration
+let roundComplete = false; // Added: Track if the current round was completed successfully
 
 // Function to update the round display
 function updateRoundButton() {
     const roundElement = document.getElementById('round');
-    roundElement.innerText = `Round: ${currentRound}`; // Dynamically update round text
+    roundElement.innerText = `Round: ${currentRound}`;
+}
+
+// Function to start the timer for the current round
+function startTimer() {
+    const timerElement = document.getElementById('timer');
+    clearInterval(timerInterval); // Clear any existing timer
+    timeRemaining = 35; // Reset the timer for the new round
+    timerInterval = setInterval(() => {
+        timeRemaining -= 1;
+        timerElement.textContent = `Time Remaining: ${timeRemaining}`;
+        if (timeRemaining <= 0) {
+            clearInterval(timerInterval);
+            alert('Time\'s up! Click Retry or Next Round.');
+        }
+    }, 1000);
+}
+
+// Function to stop the timer
+function stopTimer() {
+    clearInterval(timerInterval);
+}
+
+// Function to reset game state variables
+function resetGameState() {
+    firstCard = null;    // Reset first flipped card
+    secondCard = null;   // Reset second flipped card
+    boardLocked = false; // Unlock the board
 }
 
 // Function to fetch images from the server
@@ -26,24 +52,6 @@ async function getImages() {
         console.error("Error fetching images from server:", error);
         return null;
     }
-}
-
-// Function to trigger download event for a photo
-async function triggerDownload(photoId) {
-    try {
-        const response = await fetch(`/api/triggerDownload/${photoId}`);
-        const data = await response.json();
-        console.log("Download triggered:", data);
-    } catch (error) {
-        console.error("Error triggering download:", error);
-    }
-}
-
-// Function to handle the usage of a photo
-function usePhoto(photoUrl) {
-    const photoId = new URL(photoUrl).pathname.split('/').pop(); // Extract the photo ID
-    triggerDownload(photoId); // Trigger Unsplash download without awaiting
-    console.log(`Photo used: ${photoUrl}`);
 }
 
 // Function to duplicate and shuffle images
@@ -60,6 +68,7 @@ function duplicateAndShuffleImages(images) {
 async function initializeGame() {
     resetGameState(); // Reset variables
     flipAllCardsDown(); // Flip all cards face down
+    roundComplete = false; // Added: Reset round completion flag
 
     const images = await getImages(); // Fetch 6 images from the server
     if (images) {
@@ -79,14 +88,11 @@ async function initializeGame() {
 
             card.innerHTML = ''; // Clear the card content
             card.appendChild(img); // Add the image element
-
-            console.log(`Card ${index} assigned image:`, shuffledImages[index]);
         });
 
-        console.log("Shuffled Images Array:", shuffledImages);
-
-        setupCardClickHandlers();
+        setupCardClickHandlers(); // Set up click handlers for cards
     }
+    startTimer(); // Start the timer for the current round
 }
 
 // Function to flip all cards face down
@@ -97,21 +103,10 @@ function flipAllCardsDown() {
     });
 }
 
-// Function to reset game state variables
-function resetGameState() {
-    firstCard = null;
-    secondCard = null;
-    boardLocked = false;
-}
-
-// Function to set up click handlers for cards
+// Function to set up card click handlers
 function setupCardClickHandlers() {
     const cards = document.querySelectorAll('.card');
-
     cards.forEach((card) => {
-        // Remove existing event listener to prevent duplicates
-        card.removeEventListener('click', handleCardClick);
-        // Add the event listener
         card.addEventListener('click', handleCardClick);
     });
 }
@@ -141,8 +136,18 @@ async function checkForMatch(firstCard, secondCard) {
     if (firstImage === secondImage) {
         firstCard.classList.add('matched');
         secondCard.classList.add('matched');
-        usePhoto(firstImage); // Trigger Unsplash download
         resetBoard();
+
+        // Check if all cards are matched
+        if (document.querySelectorAll('.card.matched').length === 12) {
+            stopTimer(); // Stop the timer as all matches are found
+            roundComplete = true; // Added: Mark the round as complete
+            if (currentRound < 3) {
+                alert('All matches made! Click Retry or Next Round.');
+            } else {
+                alert('You are AWESOME! You made all matches in all 3 rounds!');
+            }
+        }
     } else {
         setTimeout(() => {
             firstCard.classList.remove('flipped');
@@ -166,39 +171,28 @@ function retry() {
 
 // Function to start the next round
 function nextRound() {
-    if (currentRound < 3) { // Check if the current round is less than 3
-        currentRound++; // Increment the round
-        updateRoundButton(); // Update the round display
-
-        // Flip all cards face down at the start of the new round
-        flipAllCardsDown();
-
-        // Initialize the game with new images
-        initializeGame();
+    if (roundComplete) { // Added: Check if the previous round was successfully completed
+        if (currentRound < 3) {
+            currentRound++; // Increment the round
+            updateRoundButton(); // Update the round display
+            flipAllCardsDown(); // Flip all cards face down
+            initializeGame(); // Initialize the game for the next round
+            roundComplete = false; // Added: Reset the flag for the new round
+        } else {
+            stopTimer();
+            alert('Thanks for playing, you are AWESOME! Keep trying!');
+        }
     } else {
-        alert('You have completed all 3 rounds! You are AWESOME!'); // Notify the player
+        alert('You must complete all matches in this round before proceeding!');
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('DOMContentLoaded event fired');
-    initializeGame();
+    initializeGame(); // Start the game
     updateRoundButton(); // Ensure the round display is correct on initial load
 
-    let timeRemaining = 35; // Set the timer duration
-    const timerElement = document.getElementById('timer');
-
-    const countdown = setInterval(() => {
-        timeRemaining -= 1;
-        timerElement.textContent = `Time Remaining: ${timeRemaining}`;
-
-        if (timeRemaining <= 0) {
-            clearInterval(countdown);
-            alert('Time\'s up! Click Retry or Next Round.');
-        }
-    }, 1000);
-
+    // Add event listeners for retry and next round buttons
     document.querySelector('.retry-button').addEventListener('click', retry);
     document.querySelector('.next-round-button').addEventListener('click', nextRound);
 });
-
