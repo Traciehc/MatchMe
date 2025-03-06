@@ -176,8 +176,8 @@ p {
     }
 
     .card {
-        width: 120px; /* Larger card width for non-mobile screens */
-        height: 120px; /* Larger card height for non-mobile screens */
+        width: 200px; /* Larger card width for non-mobile screens */
+        height: 200px; /* Larger card height for non-mobile screens */
     }
 
     .button-container {
