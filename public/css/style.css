@@ -15,8 +15,6 @@ body {
      
 }
 
-
-
 .card {
     background-color: #87cefa; 
     border: 2px solid #000;
@@ -77,12 +75,10 @@ p {
 
 #timer, #round {
     font-size: 18px;
-    background-color: hwb(51 55% 3%);
+    background-color: rgb(229, 229, 79);
     padding: 5px 10px;
     border-radius: 5px;
 }
-
-
 
 .button-container {
     display: flex;
@@ -90,14 +86,11 @@ p {
     gap: 10px; /* Add space between the buttons */
 }
 
-
-
-/* Common styles */
 .nav-button {
     padding: 10px 20px;
     font-size: 16px;
     color: #003a75;
-    background-color: hwb(51 55% 3%);
+    background-color:rgb(229, 229, 79);
     text-decoration: none;
     border: none;
     border-radius: 5px;
@@ -127,14 +120,10 @@ p {
     transition: transform 0.3s ease-in-out;
 }
 
-    
-
-.skip-to-main:focus {
+ .skip-to-main:focus {
     transform: translateY(0); /* Bring back on-screen when focused */
     outline: 2px solid #ffffff; /* Add a visible focus outline */
 }
-
-
 
 /* Mobile styles */
 @media (max-width: 768px) {
