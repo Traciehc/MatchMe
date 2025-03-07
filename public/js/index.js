@@ -145,7 +145,7 @@ async function checkForMatch(firstCard, secondCard) {
             if (currentRound < 3) {
                 alert('All matches made! Click Retry or Next Round.');
             } else {
-                alert('You are AWESOME! You made all matches in all 3 rounds!');
+                alert('You are AWESOME! Keep playing and having fun!');
             }
         }
     } else {
@@ -171,20 +171,31 @@ function retry() {
 
 // Function to start the next round
 function nextRound() {
-    if (roundComplete) { // Added: Check if the previous round was successfully completed
+    if (roundComplete) { // Ensure the round is truly complete before proceeding
         if (currentRound < 3) {
             currentRound++; // Increment the round
             updateRoundButton(); // Update the round display
             flipAllCardsDown(); // Flip all cards face down
             initializeGame(); // Initialize the game for the next round
-            roundComplete = false; // Added: Reset the flag for the new round
+            roundComplete = false; // Reset the flag for the new round
         } else {
             stopTimer();
-            alert('Thanks for playing, you are AWESOME! Keep trying!');
+            alert('Thanks for playing, you are AWESOME! Keep trying! Click Retry to have another game!');
         }
     } else {
-        alert('You must complete all matches in this round before proceeding!');
+        // Check if all matches are found before showing this alert
+        if (allMatchesFound()) {
+            roundComplete = true; // Set the flag to indicate round completion
+            nextRound(); // call nextRound after roundComplete is true
+        } else {
+            alert('You must complete all matches in this round before proceeding!');
+        }
     }
+}
+
+function allMatchesFound() {
+    // Check if all cards are matched
+    return document.querySelectorAll('.card:not(.matched)').length === 0;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
