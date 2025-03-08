@@ -64,37 +64,47 @@ function duplicateAndShuffleImages(images) {
     return allImages;
 }
 
+const placeholderSrc = './images/sabarinathan-U8eZlW4Dg-M-unsplash.jpg';
+
+
 // Function to initialize the game
 async function initializeGame() {
     resetGameState(); // Reset variables
     flipAllCardsDown(); // Flip all cards face down
-    roundComplete = false; // Added: Reset round completion flag
+    roundComplete = false; // Reset round completion flag
 
     const images = await getImages(); // Fetch 6 images from the server
+
+    const cards = document.querySelectorAll('.card');
+    cards.forEach((card) => {
+        // Set the placeholder image initially
+        const img = document.createElement('img');
+        img.src = placeholderSrc;
+        img.alt = 'Placeholder for game card';
+        img.style.width = '100%';
+        img.style.height = '100%';
+        img.style.objectFit = 'cover';
+
+        card.innerHTML = ''; // Clear the card content
+        card.appendChild(img); // Add the placeholder image
+    });
+
     if (images) {
         const shuffledImages = duplicateAndShuffleImages(images); // Duplicate and shuffle for 12 cards
-        const cards = document.querySelectorAll('.card');
 
-        // Assign images to the cards
+        // Update placeholder images with fetched images
         cards.forEach((card, index) => {
+            const img = card.querySelector('img');
+            img.src = shuffledImages[index]; // Replace placeholder with fetched image
             card.dataset.image = shuffledImages[index];
-
-            const img = document.createElement('img');
-            img.src = shuffledImages[index];
-            img.alt = 'Game card displaying a random image';
-            img.style.width = '100%';
-            img.style.height = '100%';
-            img.style.objectFit = 'cover';
-
-            card.innerHTML = ''; // Clear the card content
-            card.appendChild(img); // Add the image element
         });
 
         setupCardClickHandlers(); // Set up click handlers for cards
+    } else {
+        console.error("No images available; continuing with placeholders.");
     }
     startTimer(); // Start the timer for the current round
 }
-
 // Function to flip all cards face down
 function flipAllCardsDown() {
     const cards = document.querySelectorAll('.card');
@@ -180,7 +190,7 @@ function nextRound() {
             roundComplete = false; // Reset the flag for the new round
         } else {
             stopTimer();
-            alert('Thanks for playing, you are AWESOME! Keep trying! Click Retry to have another game!');
+            alert('Thanks for playing, you are AWESOME! Click Retry to have another game!');
         }
     } else {
         // Check if all matches are found before showing this alert
