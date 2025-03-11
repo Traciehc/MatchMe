@@ -1,4 +1,4 @@
-/* Updated CSS for improved visual appeal */
+/* Updated CSS for improved visual appeal with card wrappers */
 
 body {
     font-family: Arial, Helvetica, sans-serif;
@@ -27,6 +27,16 @@ body {
     cursor: pointer;
     position: relative;
     transition: transform 0.3s; /* Add flip animation */
+}
+
+.card-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px; /* Space around the cards */
+    border: 1px solid #0f2a7b; 
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
 }
 
 .card:hover {
@@ -128,8 +138,9 @@ p {
 /* Mobile styles */
 @media (max-width: 768px) {
     .gridOne {
-        grid-template-columns: repeat(2, 1fr); /* Adjust the number of columns for mobile */
+        grid-template-columns: repeat(3, 1fr); /* 3 columns for mobile */
         gap: 10px; /* Adjust the gap between cards for mobile */
+        padding: 10px;
     }
 
     .card {
