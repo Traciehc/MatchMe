@@ -127,7 +127,6 @@ async function handleCardClick() {
     if (this === firstCard) return; // Ignore if the same card is clicked
 
     this.classList.add('flipped');
-    const imgSrc = this.getAttribute('data-image');
 
     if (firstCard === null) {
         firstCard = this; // Store the first card
@@ -137,6 +136,7 @@ async function handleCardClick() {
         await checkForMatch(firstCard, secondCard);
     }
 }
+
 
 // Function to check for matching cards
 async function checkForMatch(firstCard, secondCard) {
