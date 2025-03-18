@@ -14,13 +14,15 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-// Explicit route for the root URL to serve page1.html
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'page1.html')); // Use 'path.join' safely
 });
 
 // Middleware to serve static files
-app.use(express.static(path.join(__dirname, 'public')));
+
+app.use("", express.static(path.join(__dirname, "./public")));
+
+
 
 // Endpoint to get images
 app.get('/api/getImages', async (req, res) => {
