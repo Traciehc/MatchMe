@@ -14,15 +14,9 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'page1.html')); // Use 'path.join' safely
-});
-
 // Middleware to serve static files
 
 app.use("", express.static(path.join(__dirname, "./public")));
-
-
 
 // Endpoint to get images
 app.get('/api/getImages', async (req, res) => {
