@@ -11,9 +11,11 @@ Features Utilized for the project
 
 -Requirement-Create a node.js web server using a modern framework such as Express.js or Fastify.  Serve at least one route that your app uses (must serve more than just the index.html file).
 	 - **Node.js Web Server:** Created with Express.js to serve three HTML files.
+
  -Requirement-Retrieve data from a third-party API and use it to display something within your app.
 	 - **Unsplash API Integration:** Fetches images to display as cards in the game, and ensures each game session feels unique by dynamically fetching images for the cards, adding replay value and variety.
-Requirement-Use arrays, objects, sets or maps to store and retrieve information that is displayed in your app.
+
+-Requirement-Use arrays, objects, sets or maps to store and retrieve information that is displayed in your app.
  	 - **Data Management:** Uses arrays and objects to manage game-related data.
 
  Tech Stack
